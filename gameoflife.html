@@ -2,131 +2,46 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <title>Game of Life 1D</title>
-    <script type="text/javascript">
-function drawPixel(ctx,x,y,colour) {
-  ctx.fillStyle = colour;
-  ctx.fillRect(x,y,1,1);
-}
-
-function generateRandomBoolArray(length) {
-  var empty = new Array(length);
-  empty.fill(false);
-  var bools = empty.map( function(el) {
-    var randomBool = Math.random() >= 0.5;
-    return randomBool;
-  });
-  return bools;
-}
-
-function singleCentre(length) {
-  var empty = new Array(length);
-  empty.fill(false);
-  empty[length / 2] = true;
-  return empty;
-}
-
-function generateFilledWith(length,fillState) {
-  var empty = new Array(length);
-  empty.fill(fillState);
-  return empty
-}
-
-function generateAlternating(length) {
-  var empty = new Array(length);
-  empty.fill(false);
-  return empty.map( function(element,index) {
-    return index % 2 == 0; 
-  });
-}
-
-function drawBoolArrayHorizontallyFromPoint(ctx,x,y,colour,bools) {
-  bools.forEach( function(bool,index) {
-    if (bool) {
-      drawPixel(ctx,x + index, y, colour)
-    }
-  });
-}
-
-function getRuleIndex(left,middle,right) {
-  return (left * 4) + (middle * 2) + (right * 1);
-}
-
-function generateRuleData(ruleNumber) {
-  ruleData = []
-  for (var i = 0; i < 8; i++)
-      ruleData[i] = ((ruleNumber >> i) & 1 == 1);
-  return ruleData;
-}
-
-function generateNextLine(prevLine,ruleData) {
-  var nextLine = prevLine.map( function(current,index,values) {
-    var width = values.length;
-    var left  = values[((index - 1)+ width) % width];
-    var right = values[(index + 1) % width];
-
-    var ruleIndex = getRuleIndex(left,current,right);
-
-    return ruleData[ruleIndex];
-  });
-  return nextLine;
-}
-
-function draw() {
-var c = document.getElementById("gameoflife");
-var ctx = c.getContext("2d");
-ctx.imageSmoothingEnabled = true;
-var width = c.width;
-var height = c.height;
-ctx.fillStyle = "#ffffff";
-ctx.fillRect(0,0,width,height);
-var ruleNumberText = document.getElementById('ruleNumber').value
-var ruleNumber = parseInt(ruleNumberText);
-var ruleData = generateRuleData(ruleNumber);
-
-var startStateRadios = document.getElementsByName("startState");
-
-var startState = "";
-startStateRadios.forEach( function(radio) {
-  if (radio.checked)
-    startState = radio.value;
-});
-
-console.log(startState);
-
-var startingLine = singleCentre(width);
-if (startState == "random")
-  startingLine = generateRandomBoolArray(width);
-else if (startState == "alternating")
-  startingLine = generateAlternating(width);
-else if (startState == "singleLeft") {
-  startingLine = generateFilledWith(width,false);
-  startingLine[0] = true;
-}
-else if (startState == "singleRight") {
-  startingLine = generateFilledWith(width,false);
-  startingLine[width - 1] = true
-}
-
-drawBoolArrayHorizontallyFromPoint(ctx,0,0,'#000000',startingLine);
-var prevLine = startingLine;
-for (y = 1;y < height;y++) {
-  var nextLine = generateNextLine(prevLine,ruleData);
-  drawBoolArrayHorizontallyFromPoint(ctx,0,y,'#000000',nextLine);
-  var prevLine = nextLine;
-}
-}
-    </script>
+    <title>Elementary Cellular Automata</title>
+    <script src="./gameoflife.js"></script>
   </head>
   <body onload="draw();">
     <form id="drawOptions" action="javascript:draw();">
-      Elementary Cellular Automata Rule Number: <input type="text" id="ruleNumber" value="110"><br>
+      <h1>Elementary Cellular Automata</h1>
+      Rule Number <input type="text" id="ruleNumber" value="110"><br>
+      <h3>Start State</h3>
       <input type="radio" name="startState" value="random"> Random<br>
       <input type="radio" name="startState" value="singleCentre" checked="checked"> Single Point Centred<br>
       <input type="radio" name="startState" value="singleLeft"> Single Point on the Left<br>
       <input type="radio" name="startState" value="singleRight"> Single Point on the Right<br>
     </form>
     <button type="submit" form="drawOptions" value="Draw">Draw</button><br>
+    <h2>Rule Visualisation</h2>
+    <div id="rulevis">
+      <table>
+        <tr>
+          <td>0</td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+          <td><canvas class="rulePart" style="border:1px solid #000000;"  width="50" height="50"></canvas></td>
+        </tr>
+      </table>
+    </div>
+    <h2>Visualisation</h2>
     <canvas id="gameoflife" style="border:1px solid #000000;"  width="1000" height="1000">
     </canvas>
   </body>

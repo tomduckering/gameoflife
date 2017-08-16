@@ -26,6 +26,12 @@ function singleCentre(length) {
   return empty;
 }
 
+function generateFilledWith(length,fillState) {
+  var empty = new Array(length);
+  empty.fill(fillState);
+  return empty
+}
+
 function generateAlternating(length) {
   var empty = new Array(length);
   empty.fill(false);
@@ -93,6 +99,14 @@ if (startState == "random")
   startingLine = generateRandomBoolArray(width);
 else if (startState == "alternating")
   startingLine = generateAlternating(width);
+else if (startState == "singleLeft") {
+  startingLine = generateFilledWith(width,false);
+  startingLine[0] = true;
+}
+else if (startState == "singleRight") {
+  startingLine = generateFilledWith(width,false);
+  startingLine[width - 1] = true
+}
 
 drawBoolArrayHorizontallyFromPoint(ctx,0,0,'#000000',startingLine);
 var prevLine = startingLine;
@@ -106,10 +120,11 @@ for (y = 1;y < height;y++) {
   </head>
   <body onload="draw();">
     <form id="drawOptions" action="javascript:draw();">
-      Elementary Cellular Automata Rule Number: <input type="text" id="ruleNumber"><br>
+      Elementary Cellular Automata Rule Number: <input type="text" id="ruleNumber" value="110"><br>
       <input type="radio" name="startState" value="random"> Random<br>
-      <input type="radio" name="startState" value="singleCentre"> Single Point Centred<br>
-      <input type="radio" name="startState" value="alternating"> Alternating<br>
+      <input type="radio" name="startState" value="singleCentre" checked="checked"> Single Point Centred<br>
+      <input type="radio" name="startState" value="singleLeft"> Single Point on the Left<br>
+      <input type="radio" name="startState" value="singleRight"> Single Point on the Right<br>
     </form>
     <button type="submit" form="drawOptions" value="Draw">Draw</button><br>
     <canvas id="gameoflife" style="border:1px solid #000000;"  width="1000" height="1000">
